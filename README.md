@@ -1,7 +1,7 @@
 # Hetzner Cloud API - JavaScript Client
-A JavaScript integration for the Hetzner cloud to easily manage your resources.
+A native JavaScript integration for the Hetzner cloud to easily manage your resources.
 
-# Implemented APIs
+# Outline of APIs
 - [Server](#server-api)
 - [FloatingIP](#floatingip-api)
 - [SSHKey](#sshkey-api)
@@ -15,28 +15,44 @@ A JavaScript integration for the Hetzner cloud to easily manage your resources.
 - [Datacenter](#datacenter-api)
 - [Action](#action-api)
 
-# Installation: NPM
-It is possible to install this library via NPM by following command:
+# Installation
+## CDN
+Import library from the ESM.SH CDN for fast and easy setup:
+### In web browser
+Simply include `hetzner-cloud` in your html `<header>` tag.
+```html
+<script type="module">
+import * as hetznerAPI from "//esm.sh/gh/rahatool/hetzner-cloud";
+</script>
+```
+### In web worker
+In order to be able to use hetzner-cloud in web workers, you need to import the source file as an ES6 module using:
+```javascript
+import * as hetznerAPI from "//esm.sh/gh/rahatool/hetzner-cloud";
+```
+## NPM registry
+Use the package manager npm to install hetzner-cloud.
 ```shell
-$ npm install @nezarati/hetzner-cloud
-$ npm install node-fetch
+$ npm install github:rahatool/hetzner-cloud
+$ npm install npm:node-fetch
 ```
 If you want to run examples in Node.js runtime environment, you need to add below lines of code at the top of them.
 ```javascript
 import fetch from 'node-fetch';
 global.fetch = fetch;
 ```
+## Direct Download
+Grab the [latest release](//github.com/rahatool/hetzner-cloud/archive/refs/heads/master.zip) file.
 
-# Getting started
-First of all you have to register your api token. To obtain an api token go to your project on [Hetzner Cloud Console](https://console.hetzner.cloud/projects) and navigate to access.
+# Implemented APIs
+First of all you have to register your api token. To obtain an api token go to your project on [Hetzner Cloud Console](//console.hetzner.cloud/projects) and navigate to access.
 ```typescript
-import {setAccessToken, Server, FloatingIP, SSHKey, Image, Volume, Network, ISO, Pricing, ServerType, Location, Datacenter, Action} from "@nezarati/hetzner-cloud";
+import {setAccessToken, Server, FloatingIP, SSHKey, Image, Volume, Network, ISO, Pricing, ServerType, Location, Datacenter, Action} from "@raha.group/hetzner-cloud";
 
-setAccessToken(api token);
+setAccessToken('your api token');
 ```
-
-# Server API
-## Skeleton of Server
+## Server API
+### Skeleton of Server
 ```typescript
 class Server {
 	static getAll(options?: {status?: enum {initializing, starting, running, stopping, off, deleting, rebuilding, migrating, unknown}, sort?: enum {id, name, created}, name?: String, label_selector?: Array}}): AsyncGeneratorFunction<Server>;
@@ -91,7 +107,7 @@ class Server {
 }
 ```
 
-## How to use Server
+### Usage of Server
 ```typescript
 // Create a Server
 let resource = new Server;
@@ -136,8 +152,8 @@ for await (let resource of Server.getAll({name: 'test', label_selector: ['k', '!
 }
 ```
 
-# FloatingIP API
-## Skeleton of FloatingIP
+## FloatingIP API
+### Skeleton of FloatingIP
 ```typescript
 class FloatingIP {
 	static getAll(options?: {sort?: enum {id, created}, label_selector?: String}): AsyncGeneratorFunction<FloatingIP>;
@@ -155,7 +171,7 @@ class FloatingIP {
 }
 ```
 
-## How to use FloatingIP
+### Usage of FloatingIP
 ```typescript
 // Create a FloatingIP
 let resource = new FloatingIP;
@@ -185,8 +201,8 @@ let resource = await FloatingIP.get(id);
 // await resource.action(parameters);
 ```
 
-# SSHKey API
-## Skeleton of SSHKey
+## SSHKey API
+### Skeleton of SSHKey
 ```typescript
 class SSHKey {
 	static getAll(options?: {sort?: enum {id, name}, name?: String, fingerprint?: String, label_selector?: String}): AsyncGeneratorFunction<SSHKey>;
@@ -196,7 +212,7 @@ class SSHKey {
 	destroy(): Promise<Void>;
 }
 ```
-## How to use SSHKey
+### Usage of SSHKey
 ```typescript
 // Create a SSHKey
 let resource = new SSHKey;
@@ -223,8 +239,8 @@ let resource = await SSHKey.get(id);
 // await resource.action(parameters);
 ```
 
-# Image API
-## Skeleton of Image
+## Image API
+### Skeleton of Image
 ```typescript
 class Image {
 	static getAll(options?: {sort?: enum {id, name, created}, type?: {system, snapshot, backup}, status?: {available, creating}, bound_to?: String, name?: String, label_selector?: String}): AsyncGeneratorFunction<Image>;
@@ -240,7 +256,7 @@ class Image {
 }
 ```
 
-## How to use Image
+### Usage of Image
 ```typescript
 // Note: The operation "Create an Image" is not available
 
@@ -262,8 +278,8 @@ let resource = await Image.get(id);
 // await resource.action(parameters);
 ```
 
-# Volume API
-## Skeleton of Volume
+## Volume API
+### Skeleton of Volume
 ```typescript
 class Volume {
 	static getAll(options?: {status?: enum {available, creating}, sort: enum {id, name, created}, name?: String, label_selector?: String}): AsyncGeneratorFunction<Volume>;
@@ -281,7 +297,7 @@ class Volume {
 	actions(options?: {status: enum {running, success, error}, sort: enum {id, command, status, progress, started, finished}}): AsyncGeneratorFunction<Action>;
 }
 ```
-## How to use Volume
+### Usage of Volume
 ```typescript
 // Create a Volume
 let resource = new Volume;
@@ -313,8 +329,8 @@ let resource = await Volume.get(id);
 // await resource.action(parameters);
 ```
 
-# Network API
-## Skeleton of Network
+## Network API
+### Skeleton of Network
 ```typescript
 class Network {
 	static getAll(options?: {name?: String, label_selector?: String}): AsyncGeneratorFunction<Network>;
@@ -334,7 +350,7 @@ class Network {
 	actions(options?: {status: enum {running, success, error}, sort: enum {id, command, status, progress, started, finished}}): AsyncGeneratorFunction<Action>;
 }
 ```
-## How to use Network
+### Usage of Network
 ```typescript
 // Create a Network
 let resource = new Network;
@@ -364,9 +380,9 @@ let resource = await Network.get(id);
 // await resource.action(parameters);
 ```
 
-# ISO API
+## ISO API
 ISOs are Read-Only images of DVDs
-## Skeleton of ISO
+### Skeleton of ISO
 ```typescript
 class ISO {
 	static getAll(options?: {name?: String}): AsyncGeneratorFunction<ISO>;
@@ -374,16 +390,16 @@ class ISO {
 }
 ```
 
-# Pricing API
-## Skeleton of Pricing
+## Pricing API
+### Skeleton of Pricing
 ```typescript
 class Pricing {
 	static getAll(options?: {name?: String}): AsyncGeneratorFunction<Pricing>;
 }
 ```
 
-# ServerType API
-## Skeleton of ServerType
+## ServerType API
+### Skeleton of ServerType
 ```typescript
 class ServerType {
 	static getAll(options?: {name?: String}): AsyncGeneratorFunction<ServerType>;
@@ -391,8 +407,8 @@ class ServerType {
 }
 ```
 
-# Location API
-## Skeleton of Location
+## Location API
+### Skeleton of Location
 ```typescript
 class Location {
 	static getAll(options?: {name?: String}): AsyncGeneratorFunction<Location>;
@@ -400,8 +416,8 @@ class Location {
 }
 ```
 
-# Datacenter API
-## Skeleton of Datacenter
+## Datacenter API
+### Skeleton of Datacenter
 ```typescript
 class Datacenter {
 	static getAll(options?: {name?: String}): AsyncGeneratorFunction<Datacenter>;
@@ -409,8 +425,8 @@ class Datacenter {
 }
 ```
 
-# Action API
-## Skeleton of Action
+## Action API
+### Skeleton of Action
 ```typescript
 class Action {
 	static getAll(options?: {status?: enum {running, success, error}, sort?: enum {id, command, status, progress, started, finished}}): AsyncGeneratorFunction<Action>;
@@ -418,15 +434,40 @@ class Action {
 }
 ```
 
-# Resources
-[Official Hetzner Cloud API documentation](https://docs.hetzner.cloud/)
-
-# Supported Browsers
-This project has been tested and works on the following browsers:
+# Supported Engines
+This project has been tested and works on the following engines:
 - Chrome (desktop & Android)
 - Firefox
 - Opera
 - Safari 12+ (desktop & iOS)
+- Node.js 10+
 
 # License
-This project is licensed under the [CC-BY-SA](http://creativecommons.org/licenses/by-sa/4.0/) License. Copyright 2019 Mahdi NezaratiZadeh. All rights reserved.
+This project by [Raha Group](//raha.group) is licensed under the [CC-BY-SA-4.0 License](//creativecommons.org/licenses/by-sa/4.0/).
+
+# Resources
+[Official Hetzner Cloud API documentation](//docs.hetzner.cloud/)
+
+# Stay connected
+Stay in touch with Raha’s community and keep track of development and community news by subscribing to the Raha’s [Blog](//raha.group) and [YouTube channel](//youtube.com/channel/UC0bWOBL-vMPCwT6nI9Cz1yw).
+
+## Documentation
+The official docs are a great place to discover new things.
+
+## Issue Tracker
+Are you experiencing problems with Raha? [report issues](//groups.google.com/d/forum/rahagroup) and find solutions to your problems here. 
+
+## Feature Request
+You are always welcome to ask for more features to be added to Raha.
+
+## Events
+Stay up to date with meetups, conferences and more.
+
+## Support
+Looking for help? please first check out the official (mentioned above) and unofficial (e.g. [Stack Overflow](//stackoverflow.com/questions/tagged/raha)) resources. If you are still experiencing problems, feel free to create a new issue.
+
+# Donation
+If you'd like Raha to grow even stronger, please become a sponsor today by donating via Paypal [![Donate][paypal-image]][paypal-url] *(Farnood)* to support Raha's ongoing maintenance and development of new functionality.
+
+[paypal-image]: https://img.shields.io/badge/paypal-donate-brightgreen.svg
+[paypal-url]: //paypal.com/cgi-bin/webscr?cmd=_donations&business=RZC8HCR5SPGQY&item_name=Contribute+to+Raha%27s+ongoing+maintenance+and+development&currency_code=USD&source=url
